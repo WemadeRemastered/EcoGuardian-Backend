@@ -16,7 +16,6 @@ public class DeviceAuthorizationMiddleware
 
     public async Task InvokeAsync(HttpContext context, IDeviceRepository deviceRepository)
     {
-
         if (context.Request.Path.StartsWithSegments("/api/v1/metrics"))
         {
             var deviceIdHeader = context.Request.Headers["Device-Id"].ToString();
@@ -30,15 +29,16 @@ public class DeviceAuthorizationMiddleware
             }
 
             var device = await deviceRepository.GetByIdAsync(deviceId);
-            Console.WriteLine(_apiKey);
             if (device == null || apiKeyHeader != _apiKey)
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
                 await context.Response.WriteAsync("Invalid device credentials");
                 return;
             }
+
             context.Items["DeviceId"] = deviceId;
         }
+
         await _next(context);
     }
 }

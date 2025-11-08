@@ -19,13 +19,7 @@ namespace EcoGuardian_Backend.IAM.Interfaces.REST;
 public class AuthenticationController(IUserCommandService userCommandService, ICloudinaryStorage cloudinaryStorage) : ControllerBase
 {
 
-    /**
-     * <summary>
-     *     Sign in endpoint. It allows to authenticate a user
-     * </summary>
-     * <param name="signInResource">The sign in resource containing username and password.</param>
-     * <returns>The authenticated user resource, including a JWT token</returns>
-     */
+    [Obsolete("This endpoint is deprecated. Use Auth0 for authentication.")]
     [HttpPost("sign-in")]
     [AllowAnonymous]
     public async Task<IActionResult> SignIn([FromBody] SignInResource signInResource)
@@ -38,13 +32,7 @@ public class AuthenticationController(IUserCommandService userCommandService, IC
         return Ok(resource);
     }
 
-    /**
-     * <summary>
-     *     Sign up endpoint. It allows to create a new user
-     * </summary>
-     * <param name="signUpResource">The sign up resource containing username and password.</param>
-     * <returns>A confirmation message on successful creation.</returns>
-     */
+    [Obsolete("This endpoint is deprecated. Use Auth0 for user registration.")]
     [HttpPost("sign-up")]
     [AllowAnonymous]
     public async Task<IActionResult> SignUp([FromBody] SignUpResource signUpResource)
