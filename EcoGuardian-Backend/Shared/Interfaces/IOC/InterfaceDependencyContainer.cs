@@ -18,25 +18,14 @@ public static class InterfaceDependencyContainer
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "EcoGuardian API", Version = "v1" });
             c.OperationFilter<FileUploadOperationFilter>();
 
-            var auth0Settings = builder.Configuration.GetSection("Auth0").Get<Auth0Settings>();
-
-            c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Type = SecuritySchemeType.OAuth2,
-                Flows = new OpenApiOAuthFlows
-                {
-                    AuthorizationCode = new OpenApiOAuthFlow
-                    {
-                        AuthorizationUrl = new Uri($"https://{auth0Settings!.Domain}/authorize"),
-                        TokenUrl = new Uri($"https://{auth0Settings.Domain}/oauth/token"),
-                        Scopes = new Dictionary<string, string>
-                        {
-                            { "openid", "OpenID" },
-                            { "profile", "Profile" },
-                            { "email", "Email" }
-                        }
-                    }
-                }
+                Description = "JWT Authorization header using the Bearer scheme. Enter your token in the text input below.",
+                Name = "Authorization",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
+                BearerFormat = "JWT"
             });
 
             c.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -47,10 +36,10 @@ public static class InterfaceDependencyContainer
                         Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "oauth2"
+                            Id = "Bearer"
                         }
                     },
-                    new[] { "openid", "profile", "email" }
+                    Array.Empty<string>()
                 }
             });
         });
