@@ -44,9 +44,14 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
             Console.WriteLine("User not authenticated");
             throw new UnauthorizedAccessException("User not authenticated");
         }
+        foreach (var claim in context.User.Claims)
+        {
+            Console.WriteLine($"Claim: {claim.Type} = {claim.Value}");
+        }
 
         var auth0UserId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var name = context.User.FindFirst("nickname")?.Value;
+        var name = context.User.FindFirst(ClaimTypes.GivenName)?.Value ?? context.User.FindFirst("name")?.Value;
+        var lastName = context.User.FindFirst(ClaimTypes.Surname)?.Value ?? string.Empty;
         var picture = context.User.FindFirst("picture")?.Value;
         var email = context.User.FindFirst(ClaimTypes.Email)?.Value
                    ?? context.User.FindFirst("email")?.Value;
@@ -86,10 +91,10 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
                 Console.WriteLine("Profile not found, creating default profile");
                 var command = new CreateProfileCommand(
                     email,
-                    name ?? string.Empty,
+                    name ?? string.Empty,   
+                    lastName,
                     string.Empty,
-                    string.Empty,
-                    picture ?? "https://tse4.mm.bing.net/th/id/OIP.Yaficbwe3N2MjD2Sg0J9OgHaHa?pid=Api&P=0&h=180",
+                    picture ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png",
                     user.Id,
                     1
                 

@@ -39,18 +39,18 @@ public class Profile
         this.Address = command.Address;
         this.UserId = command.UserId;
         this.SubscriptionId = command.SubscriptionId;
-        this.AvatarUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/2048px-Default_pfp.svg.png";
+        this.AvatarUrl = command.AvatarUrl;
     }
 
     public void Update(UpdateProfileCommand command)
     {
-        this.Name = command.Name;
-        this.LastName = command.LastName; // Assuming LastName is part of the command
-        this.Address = command.Address;
+        Name = command.Name;
+        LastName = command.LastName;
+        Address = command.Address;
     }
     
-    public void upateImage(string imageUrl)
+    public void UpateImage(string imageUrl)
     {
-        this.AvatarUrl = imageUrl;
+        AvatarUrl = imageUrl;
     }
 }
