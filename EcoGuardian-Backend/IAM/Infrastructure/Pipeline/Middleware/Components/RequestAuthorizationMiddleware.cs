@@ -50,7 +50,7 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
         }
 
         var auth0UserId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        var name = context.User.FindFirst(ClaimTypes.GivenName)?.Value ?? context.User.FindFirst("name")?.Value;
+        var name = context.User.FindFirst(ClaimTypes.GivenName)?.Value ?? context.User.FindFirst("nickname")?.Value;
         var lastName = context.User.FindFirst(ClaimTypes.Surname)?.Value ?? string.Empty;
         var picture = context.User.FindFirst("picture")?.Value;
         var email = context.User.FindFirst(ClaimTypes.Email)?.Value
