@@ -3,6 +3,9 @@ using EcoGuardian_Backend.IAM.Domain.Model.Commands;
 using EcoGuardian_Backend.IAM.Domain.Respositories;
 using EcoGuardian_Backend.IAM.Domain.Services;
 using EcoGuardian_Backend.IAM.Infrastructure.Pipeline.Middleware.Attributes;
+using EcoGuardian_Backend.ProfilePreferences.Domain.Model.Commands;
+using EcoGuardian_Backend.ProfilePreferences.Domain.Repositories;
+using EcoGuardian_Backend.ProfilePreferences.Domain.Services;
 
 namespace EcoGuardian_Backend.IAM.Infrastructure.Pipeline.Middleware.Components;
 
@@ -11,10 +14,11 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
     public async Task InvokeAsync(
         HttpContext context,
         IUserRepository userRepository,
+        IProfileRepository profileRepository,
+        IProfileCommandService profileCommandService,
         IUserCommandService userCommandService)
     {
         Console.WriteLine("Entering InvokeAsync");
-
         if (context.Request.HttpContext.GetEndpoint() == null)
         {
             Console.WriteLine("Endpoint is null, skipping authorization");
@@ -42,6 +46,8 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
         }
 
         var auth0UserId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var name = context.User.FindFirst("nickname")?.Value;
+        var picture = context.User.FindFirst("picture")?.Value;
         var email = context.User.FindFirst(ClaimTypes.Email)?.Value
                    ?? context.User.FindFirst("email")?.Value;
         var role = context.User.FindFirst(ClaimTypes.Role)?.Value
@@ -71,6 +77,28 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
             Console.WriteLine("Failed to sync user from Auth0");
             throw new UnauthorizedAccessException("User not found");
         }
+
+        if (email != null)
+        {
+            var profile = await profileRepository.GetProfileByEmailAsync(email);
+            if (profile == null)
+            {
+                Console.WriteLine("Profile not found, creating default profile");
+                var command = new CreateProfileCommand(
+                    email,
+                    name ?? string.Empty,
+                    string.Empty,
+                    string.Empty,
+                    picture ?? "https://tse4.mm.bing.net/th/id/OIP.Yaficbwe3N2MjD2Sg0J9OgHaHa?pid=Api&P=0&h=180",
+                    user.Id,
+                    1
+                
+                );
+                await profileCommandService.Handle(command);
+            
+            }
+        }
+        
 
         Console.WriteLine("Successful authorization. Updating Context...");
         context.Items["User"] = user;

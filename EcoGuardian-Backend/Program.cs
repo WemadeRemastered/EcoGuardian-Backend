@@ -18,22 +18,21 @@ StripeConfiguration.ApiKey = builder.Configuration["Stripe:ApiKey"];
 builder.Services.Configure<Auth0Settings>(builder.Configuration.GetSection("Auth0"));
 
 var auth0Settings = builder.Configuration.GetSection("Auth0").Get<Auth0Settings>();
-
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.Authority = $"https://{auth0Settings!.Domain}/";
-        options.Audience = auth0Settings.Audience;
+        options.Authority = $"https://{auth0Settings?.Domain}/";
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
-            ValidIssuer = $"https://{auth0Settings.Domain}/",
+            ValidIssuer = $"https://{auth0Settings?.Domain}/",
             ValidateAudience = true,
-            ValidAudience = auth0Settings.Audience,
+            ValidAudience = auth0Settings?.Management.ClientId, 
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
     });
+
 
 builder.Services.AddAuthorization();
 
