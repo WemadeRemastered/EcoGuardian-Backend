@@ -1,7 +1,7 @@
 namespace EcoGuardian_Backend.SubscriptionsAndPayment.Interfaces.REST.Resources;
 
 public record CreateSubscriptionResource(
-    int UserId,
+    string UserId,
     int SubscriptionTypeId,
     int SubscriptionStateId,
     string Currency,

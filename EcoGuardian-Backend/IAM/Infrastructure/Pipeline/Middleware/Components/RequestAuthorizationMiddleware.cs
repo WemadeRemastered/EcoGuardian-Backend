@@ -25,6 +25,8 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
             await next(context);
             return;
         }
+        
+        Console.WriteLine(context.Request.HttpContext.GetEndpoint());
 
         var allowAnonymous = context.Request.HttpContext.GetEndpoint()!.Metadata
             .Any(m => m.GetType() == typeof(AllowAnonymousAttribute));
@@ -44,11 +46,6 @@ public class RequestAuthorizationMiddleware(RequestDelegate next)
             Console.WriteLine("User not authenticated");
             throw new UnauthorizedAccessException("User not authenticated");
         }
-        foreach (var claim in context.User.Claims)
-        {
-            Console.WriteLine($"Claim: {claim.Type} = {claim.Value}");
-        }
-
         var auth0UserId = context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         var name = context.User.FindFirst(ClaimTypes.GivenName)?.Value ?? context.User.FindFirst("nickname")?.Value;
         var lastName = context.User.FindFirst(ClaimTypes.Surname)?.Value ?? string.Empty;

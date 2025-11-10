@@ -43,16 +43,24 @@ public class Payment
         // we will use the enum and convert it to string when we need to return it as a resource or persist it in the database.
     }
 
-    public Payment(CreatePaymentCommand command)
+    public Payment(
+        string paymentIntentId,
+        string paymentMethodId,
+        decimal amount,
+        string currency,
+        string paymentStatus,
+        int userId,
+        int referenceId,
+        string referenceType)
     {
-        PaymentIntentId = command.PaymentIntentId;
-        PaymentMethodId = command.PaymentMethodId;
-        Amount = command.Amount;
-        Currency = command.Currency;
-        PaymentStatus = command.PaymentStatus;
-        UserId = command.UserId;
-        ReferenceId = command.ReferenceId;
-        ReferenceType = command.ReferenceType;
+        PaymentIntentId = paymentIntentId;
+        PaymentMethodId = paymentMethodId;
+        Amount = amount;
+        Currency = currency;
+        PaymentStatus = paymentStatus;
+        UserId = userId;
+        ReferenceId = referenceId;
+        ReferenceType = referenceType;
         CreatedAt = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow);
         UpdatedAt = null;
     }

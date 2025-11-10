@@ -1,4 +1,5 @@
 using EcoGuardian_Backend.Shared.Domain.Repositories;
+using EcoGuardian_Backend.SubscriptionsAndPayment.Application.Internal.OutBoundServices;
 using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Model.Aggregates;
 using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Model.Commands;
 using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Model.ValueObjects;
@@ -10,18 +11,24 @@ namespace EcoGuardian_Backend.SubscriptionsAndPayment.Application.Internal.Comma
 public class SubscriptionCommandService(
     ISubscriptionRepository subscriptionRepository,
     ISubscriptionStateRepository subscriptionStateRepository,
+    IExternalPayerService externalPayerService,
     ISubscriptionTypeRepository subscriptionTypeRepository,
     IUnitOfWork unitOfWork
 ) : ISubscriptionCommandService
 {
     public async Task<Subscription?> Handle(CreateSubscriptionCommand command)
     {
-        
         // TODO: Validar si el usuario ya tiene una suscripción activa
-
         try
         {
-            var subscription = new Subscription(command);
+            var userId = await externalPayerService.CheckExternalPayerExists(command.UserId);
+            var subscription = new Subscription(
+                userId,
+                command.SubscriptionTypeId,
+                command.Amount,
+                command.Currency
+            );
+
             await subscriptionRepository.AddAsync(subscription);
             await unitOfWork.CompleteAsync();
 
@@ -36,35 +43,36 @@ public class SubscriptionCommandService(
 
     public async Task<Subscription?> Handle(UpdateSubscriptionTypeCommand command)
     {
-        var subscription = await subscriptionRepository.GetByIdAsync(command.Id);
-        if (subscription == null)
-        {
-            throw new BadHttpRequestException("No se encontró la suscripción con el ID proporcionado.");
-        }
-        
-        var subscriptionType = await subscriptionTypeRepository.GetByIdAsync(command.SubscriptionTypeId);
-        if (subscriptionType == null)
-        {
-            throw new BadHttpRequestException("No se encontró el tipo de suscripción con el ID proporcionado.");
-        }
-
-        // actualizamos los campos
-        subscription.SubscriptionTypeId = command.SubscriptionTypeId;
-        subscription.Amount = GetAmountForSubscriptionType(command.SubscriptionTypeId);
-        subscription.SubscriptionStateId = (int)ESubscriptionStates.Inactive;
-        subscription.UpdatedAt = DateTime.UtcNow;
-
         try 
         {
+            var userId = await externalPayerService.CheckExternalPayerExists(command.UserId);
+            var subscription = await subscriptionRepository.GetByIdAsync(command.Id);
+            if (subscription == null)
+            {
+                throw new BadHttpRequestException("No se encontró la suscripción con el ID proporcionado.");
+            }
+        
+            var subscriptionType = await subscriptionTypeRepository.GetByIdAsync(command.SubscriptionTypeId);
+            if (subscriptionType == null)
+            {
+                throw new BadHttpRequestException("No se encontró el tipo de suscripción con el ID proporcionado.");
+            }
+
+            // actualizamos los campos
+            subscription.SubscriptionTypeId = command.SubscriptionTypeId;
+            subscription.Amount = GetAmountForSubscriptionType(command.SubscriptionTypeId);
+            subscription.SubscriptionStateId = (int)ESubscriptionStates.Inactive;
+            subscription.UpdatedAt = DateTime.UtcNow;
+            subscription.UserId = userId;
             subscriptionRepository.Update(subscription);
             await unitOfWork.CompleteAsync();
+            return subscription;
         }
         catch (Exception ex)
         {
             throw new InvalidOperationException("Error al actualizar la suscripción.", ex);
         }
-
-        return subscription;
+        
     }
 
 

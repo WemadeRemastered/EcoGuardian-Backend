@@ -3,6 +3,6 @@ namespace EcoGuardian_Backend.IAM.Interfaces.ACL;
 public interface IIamContextFacade
 {
     
-   Task<bool> UsersExists(int userId);
+   Task<int> UsersExists(string userId);
    Task UpdateRoleId(int userId, int roleId);
 }

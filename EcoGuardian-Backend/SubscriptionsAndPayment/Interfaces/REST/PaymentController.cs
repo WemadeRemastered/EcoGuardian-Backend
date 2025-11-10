@@ -65,7 +65,7 @@ public class PaymentController(
     
     [HttpGet("{userId:int}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetPaymentsByUserId([FromRoute] int userId)
+    public async Task<IActionResult> GetPaymentsByUserId([FromRoute] string userId)
     {
         var query = new GetPaymentsByUserId(userId);
         var payments = await paymentQueryService.Handle(query);

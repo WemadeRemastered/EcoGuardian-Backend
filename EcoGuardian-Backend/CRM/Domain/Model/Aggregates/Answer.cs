@@ -19,11 +19,11 @@ namespace EcoGuardian_Backend.CRM.Domain.Model.Aggregates
 
         }
 
-        public Answer(RegisterAnswerCommand command)
+        public Answer(int questionId, string answerText, int specialistId)
         {
-            QuestionId = command.QuestionId;
-            Content = command.AnswerText;
-            SpecialistId = command.SpecialistId;
+            QuestionId = questionId;
+            Content = answerText;
+            SpecialistId = specialistId;
             CreatedAt = DateTime.UtcNow;
         }
 

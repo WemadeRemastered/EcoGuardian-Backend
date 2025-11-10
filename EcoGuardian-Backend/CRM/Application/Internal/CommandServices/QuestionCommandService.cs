@@ -15,18 +15,20 @@ public class QuestionCommandService(IQuestionRepository questionRepository, IUni
     public async Task<Question> Handle(RegisterQuestionCommand command)
     {
         // Check if the user exists before adding the question
-        if (!await externalUserService.CheckUserExists(command.UserId))
-        {
-            throw new BadHttpRequestException($"User with ID {command.UserId} does not exist.");
-        }
+        var userId = await externalUserService.CheckUserExists(command.UserId);
 
-        // Check if the plant exists
+// Check if the plant exists
         if (!await externalUserService.CheckPlantExists(command.PlantId))
         {
-            throw new BadHttpRequestException($"Plant with ID {command.UserId} does not exist.");
+            throw new BadHttpRequestException($"Plant with ID {command.PlantId} does not exist.");
         }
 
-        var question = new Question(command);
+        var question = new Question(
+            command.Title,
+            command.Content,
+            userId,
+            command.PlantId
+        );
         if (command.ImageUrls != null && command.ImageUrls.Any())
         {
             var imageUrls = new List<string>();

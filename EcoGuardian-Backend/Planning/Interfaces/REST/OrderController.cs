@@ -42,7 +42,7 @@ public class OrderController(IOrderCommandService orderCommandService, IOrderQue
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [AuthorizeFilter("Admin", "Domestic", "Business", "Specialist")]
-    public async Task<IActionResult> GetOrdersByConsumerId([FromQuery] int consumerId)
+    public async Task<IActionResult> GetOrdersByConsumerId([FromQuery] string consumerId)
     {
         var query = new GetOrdersByConsumerIdQuery(consumerId);
         var orders = await orderQueryService.Handle(query);

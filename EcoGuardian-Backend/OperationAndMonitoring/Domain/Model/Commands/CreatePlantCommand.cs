@@ -5,7 +5,7 @@ public record CreatePlantCommand(
     IFormFile Image,
     string Type,
     int AreaCoverage,
-    int UserId,
+    string UserId,
     double WaterThreshold,
     double LightThreshold,
     double TemperatureThreshold,

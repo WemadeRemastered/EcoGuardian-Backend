@@ -51,6 +51,7 @@ using EcoGuardian_Backend.Resources.Interfaces.ACL.Service;
 using EcoGuardian_Backend.Shared.Application.Internal.CloudinaryStorage;
 using EcoGuardian_Backend.Shared.Application.Internal.CloudinaryStorage.Configuration;
 using EcoGuardian_Backend.Shared.Infrastructure.Cloudinary;
+using EcoGuardian_Backend.SubscriptionsAndPayment.Application.Internal.OutBoundServices;
 
 namespace EcoGuardian_Backend.Shared.Application.IOC;
 
@@ -79,6 +80,7 @@ public static class ApplicationDependencyContainer
 
         // External User Service for CRM
         services.AddScoped<IExternalUserServiceCRM, ExternalUserServiceCRM>();
+        services.AddScoped<Planning.Application.Internal.OutboundServices.IExternalUserService,Planning.Application.Internal.OutboundServices.ExternalUserService>();
 
         services.AddScoped<IProfileCommandService, ProfileCommandService>();
         services.AddScoped<IProfileQueryService, ProfileQueryService>();
@@ -121,6 +123,7 @@ public static class ApplicationDependencyContainer
         
         services.AddScoped<IAggregationLevelCommandService, AggregationLevelCommandService>();
         services.AddScoped<IAggregationLevelRepository, AggregationLevelRepository>();
+        services.AddScoped<IExternalPayerService, ExternalPayerService>();
         // Register other application services as needed
         /*services.AddScoped<IExternalCustomerService, ExternalCustomerService>();*/
 

@@ -14,12 +14,14 @@ public class AnswerCommandService(
 {
     public async Task Handle(RegisterAnswerCommand command)
     {
-        var answer = new Answer(command);
-        // Check if the user exists before adding the answer
-        if (!await externalUserService.CheckUserExists(command.SpecialistId))
-        {
-            throw new BadHttpRequestException($"User with ID {command.SpecialistId} does not exist.");
-        }
+        var userId = await externalUserService.CheckUserExists(command.SpecialistId);
+        var answer = new Answer(
+            command.QuestionId,
+            command.AnswerText,
+            userId
+        );
+
+        
         await answerRepository.AddAsync(answer);
         await unitOfWork.CompleteAsync();
         

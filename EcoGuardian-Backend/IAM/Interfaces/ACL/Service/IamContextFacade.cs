@@ -9,11 +9,15 @@ namespace EcoGuardian_Backend.IAM.Interfaces.ACL.Service;
 public class IamContextFacade(IUserQueryService userQueryService, IUserCommandService commandService) : IIamContextFacade
 {
 
-    public async Task<bool> UsersExists(int userId)
+    public async Task<int> UsersExists(string userId)
     {
        var getUserByIdQuery = new GetUserByIdQuery(userId);
        var user = await userQueryService.Handle(getUserByIdQuery);
-       return user != null;
+       if (user == null)
+       {
+           throw new Exception($"User with ID {userId} does not exist.");
+       }
+       return user.Id;
     }
 
     public async Task UpdateRoleId(int userId, int roleId)

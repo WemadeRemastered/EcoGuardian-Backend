@@ -4,7 +4,7 @@ namespace EcoGuardian_Backend.OperationAndMonitoring.Application.Internal.Outbou
 
 public class ExternalUserService(IIamContextFacade iamContextFacade) : IExternalUserService
 {
-    public async Task<bool> CheckUserExists(int userId)
+    public async Task<int> CheckUserExists(string userId)
     {
         return await iamContextFacade.UsersExists(userId);
     }

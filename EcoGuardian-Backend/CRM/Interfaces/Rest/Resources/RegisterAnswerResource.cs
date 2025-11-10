@@ -6,6 +6,6 @@ using System.Threading.Tasks;
 namespace EcoGuardian_Backend.CRM.Interfaces.Rest.Resources;
 
 public record RegisterAnswerResource(
-    int SpecialistId,
+    string SpecialistId,
     string AnswerText
 );

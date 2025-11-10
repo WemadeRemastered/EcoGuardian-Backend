@@ -2,7 +2,7 @@
 
 public record CreateOrderResource(
     string Action,
-    int ConsumerId,
+    string ConsumerId,
     DateTime? InstallationDate,
     List<CreateOrderDetailResource> Details
 );

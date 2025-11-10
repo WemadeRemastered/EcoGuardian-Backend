@@ -4,6 +4,6 @@ namespace EcoGuardian_Backend.SubscriptionsAndPayment.Interfaces.REST.Resources;
 
 public record UpdateSubscriptionTypeCommand(
     int Id,
-    int UserId,
+    string UserId,
     int SubscriptionTypeId
 );

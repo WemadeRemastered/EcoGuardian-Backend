@@ -2,5 +2,5 @@ namespace EcoGuardian_Backend.OperationAndMonitoring.Application.Internal.Outbou
 
 public interface IExternalUserService
 {
-    Task<bool> CheckUserExists(int userId);
+    Task<int> CheckUserExists(string userId);
 }

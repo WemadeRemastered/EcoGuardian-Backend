@@ -5,4 +5,4 @@ using System.Threading.Tasks;
 
 namespace EcoGuardian_Backend.CRM.Domain.Model.Queries;
 
-public record GetQuestionsBySpecialistId(int SpecialistId);
+public record GetQuestionsBySpecialistId(string SpecialistId);

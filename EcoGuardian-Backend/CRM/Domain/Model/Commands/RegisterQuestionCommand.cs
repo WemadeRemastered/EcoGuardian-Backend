@@ -7,7 +7,7 @@ namespace EcoGuardian_Backend.CRM.Domain.Model.Commands;
 public record RegisterQuestionCommand(
     string Title,
     string Content,
-    int UserId,
+    string UserId,
     int PlantId,
     List<IFormFile>? ImageUrls
 );

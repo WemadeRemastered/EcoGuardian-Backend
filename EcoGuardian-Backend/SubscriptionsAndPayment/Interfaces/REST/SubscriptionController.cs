@@ -44,7 +44,7 @@ public class SubscriptionController(
 
     [HttpGet("user/{userId:int}")]
     [AllowAnonymous]
-    public async Task<IActionResult> GetSubscriptionByUserId([FromRoute] int userId)
+    public async Task<IActionResult> GetSubscriptionByUserId([FromRoute] string userId)
     {
         var query = new GetSubscriptionByUserIdQuery(userId);
         var subscription = await subscriptionQueryService.Handle(query);

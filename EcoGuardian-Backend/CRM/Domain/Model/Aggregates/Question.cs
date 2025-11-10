@@ -20,12 +20,12 @@ public class Question
 
     public Question()
     {
-    }    public Question(RegisterQuestionCommand command)
+    }   public Question(string title, string content, int userId, int plantId)
     {
-        Title = command.Title;
-        Content = command.Content;
-        UserId = command.UserId;
-        PlantId = command.PlantId;
+        Title = title;
+        Content = content;
+        UserId = userId;
+        PlantId = plantId;
         CreatedAt = DateTime.UtcNow;
     }
 

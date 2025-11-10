@@ -1,3 +1,4 @@
+using EcoGuardian_Backend.SubscriptionsAndPayment.Application.Internal.OutBoundServices;
 using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Model.Aggregates;
 using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Model.Queries;
 using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Repositories;
@@ -5,7 +6,7 @@ using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Services;
 
 namespace EcoGuardian_Backend.SubscriptionsAndPayment.Application.Internal.QueryServices;
 
-public class PaymentQueryService(IPaymentRepository paymentRepository) : IPaymentQueryService
+public class PaymentQueryService(IPaymentRepository paymentRepository, IExternalPayerService externalPayerService) : IPaymentQueryService
 {
     public async Task<IEnumerable<Payment>> Handle(GetAllPayments query)
     {
@@ -14,7 +15,8 @@ public class PaymentQueryService(IPaymentRepository paymentRepository) : IPaymen
 
     public async Task<IEnumerable<Payment>> Handle(GetPaymentsByUserId query)
     {
-        return await paymentRepository.GetPaymentsByUserIdAsync(query.UserId);
+        var userId = await externalPayerService.CheckExternalPayerExists(query.UserId);
+        return await paymentRepository.GetPaymentsByUserIdAsync(userId);
     }
 
     public async Task<IEnumerable<Payment>> Handle(GetPaymentsBySubscriptionType query)

@@ -35,23 +35,30 @@ public class Subscription
         ExpirationDate = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow.AddMonths(1));
     }
 
-    public Subscription(CreateSubscriptionCommand command)
+    public Subscription(
+        int userId,
+        int subscriptionTypeId,
+        decimal amount,
+        string currency)
     {
-        UserId = command.UserId;
-        SubscriptionTypeId = command.SubscriptionTypeId;
-        SubscriptionStateId = 1; // default state
-        Amount = command.Amount;
-        Currency = command.Currency;
+        UserId = userId;
+        SubscriptionTypeId = subscriptionTypeId;
+        SubscriptionStateId = 1; 
+        Amount = amount;
+        Currency = currency;
         CreatedAt = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow);
         UpdatedAt = null;
-        ExpirationDate = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow.AddMonths(1)); // default to 1 month from now
+        ExpirationDate = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow.AddMonths(1)); 
     }
 
-    public Subscription(UpdateSubscriptionTypeCommand command)
+    public Subscription(
+        int id,
+        int userId,
+        int subscriptionTypeId)
     {
-        SubscriptionStateId = command.Id;
-        UserId = command.UserId;
-        SubscriptionTypeId = command.SubscriptionTypeId;
+        SubscriptionStateId = id;
+        UserId = userId;
+        SubscriptionTypeId = subscriptionTypeId;
         UpdatedAt = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow);
     }
 }

@@ -16,7 +16,6 @@ namespace EcoGuardian_Backend.OperationAndMonitoring.Interfaces.REST;
 public class PlantController(IPlantCommandService plantCommandService, IPlantQueryService plantQueryService) : ControllerBase
 {
     [HttpPost]
-    [Consumes("multipart/form-data")]
     [ProducesResponseType(201)]
     [AuthorizeFilter("Admin", "Domestic", "Business")]
     public async Task<IActionResult> CreatePlant([FromForm] CreatePlantResource resource)
@@ -54,7 +53,7 @@ public class PlantController(IPlantCommandService plantCommandService, IPlantQue
     [HttpGet]
     [ProducesResponseType(200)]
     [AuthorizeFilter("Admin", "Domestic", "Business", "Specialist")]
-    public async Task<IActionResult> GetPlantsByUserId([FromQuery] int userId)
+    public async Task<IActionResult> GetPlantsByUserId([FromQuery] string userId)
     {
         var query = new GetPlantsByUserIdQuery(userId);
         var plants = await plantQueryService.Handle(query);

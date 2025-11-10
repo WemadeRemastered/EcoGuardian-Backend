@@ -37,35 +37,52 @@ public class Plant
         Image = string.Empty;
     }
 
-    public Plant(CreatePlantCommand command)
+    public Plant(
+        string type,
+        string name,
+        int areaCoverage,
+        int userId,
+        double waterThreshold,
+        double lightThreshold,
+        double temperatureThreshold,
+        bool isPlantation,
+        int wellnessStateId)
     {
-        Type = command.Type;
-        Name = command.Name;
-        AreaCoverage = command.AreaCoverage;
-        UserId = command.UserId;
-        WaterThreshold = command.WaterThreshold;
-        LightThreshold = command.LightThreshold;
-        TemperatureThreshold = command.TemperatureThreshold;
+        Type = type;
+        Name = name;
+        AreaCoverage = areaCoverage;
+        UserId = userId;
+        WaterThreshold = waterThreshold;
+        LightThreshold = lightThreshold;
+        TemperatureThreshold = temperatureThreshold;
         CreatedAt = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow);
         UpdatedAt = null;
-        IsPlantation = command.IsPlantation;
-        WellnessStateId = command.WellnessStateId;
+        IsPlantation = isPlantation;
+        WellnessStateId = wellnessStateId;
         Image = string.Empty;
     }
 
-    public void Update(UpdatePlantCommand command)
-    { 
-        Type = command.Type;
-        Name = command.Name;
-        AreaCoverage = command.AreaCoverage;
-        UserId = command.UserId;
-        WaterThreshold = command.WaterThreshold;
-        LightThreshold = command.LightThreshold;
-        TemperatureThreshold = command.TemperatureThreshold;
+    public void Update(
+        string type,
+        string name,
+        int areaCoverage,
+        int userId,
+        double waterThreshold,
+        double lightThreshold,
+        double temperatureThreshold,
+        bool isPlantation,
+        int wellnessStateId)
+    {
+        Type = type;
+        Name = name;
+        AreaCoverage = areaCoverage;
+        UserId = userId;
+        WaterThreshold = waterThreshold;
+        LightThreshold = lightThreshold;
+        TemperatureThreshold = temperatureThreshold;
         UpdatedAt = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow);
-        IsPlantation = command.IsPlantation;
-        WellnessStateId = command.WellnessStateId;
-        
+        IsPlantation = isPlantation;
+        WellnessStateId = wellnessStateId;
     }
 
     public void UpdateState(UpdatePlantStateCommand command)

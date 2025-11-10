@@ -9,7 +9,7 @@ public class UserQueryService(IUserRepository userRepository) : IUserQueryServic
 {
     public async Task<User?> Handle(GetUserByIdQuery query)
     {
-        return await userRepository.GetByIdAsync(query.Id);
+        return await userRepository.FindByAuth0UserIdAsync(query.Id);
     }
 
     public async Task<User?> Handle(GetUserByAuth0UserIdQuery query)

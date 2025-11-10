@@ -8,7 +8,7 @@ public record CreatePaymentCommand(
     decimal Amount,
     string Currency,
     string PaymentStatus,
-    int UserId,
+    string UserId,
     int ReferenceId,
     string ReferenceType
 );

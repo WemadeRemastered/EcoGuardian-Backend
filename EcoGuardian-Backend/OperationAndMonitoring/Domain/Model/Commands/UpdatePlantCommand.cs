@@ -5,7 +5,7 @@ public record UpdatePlantCommand(
       string Name,
       string Type,
       int AreaCoverage,
-      int UserId,
+      string UserId,
       double WaterThreshold,
       double LightThreshold,
       double TemperatureThreshold,

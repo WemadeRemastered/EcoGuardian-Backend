@@ -27,32 +27,35 @@ public class Order
         InstallationDate = null;
     }
 
-    public Order(CreateOrderCommand command)
+    public Order(
+        string action,
+        int consumerId,
+        DateTime? installationDate,
+        List<OrderDetail>? orderDetails)
     {
-        Action = command.Action;
+        Action = action;
         CreatedAt = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow);
         CompletedAt = null;
         StateId = 1;
-        ConsumerId = command.ConsumerId;
+        ConsumerId = consumerId;
         SpecialistId = null;
-        InstallationDate = command.InstallationDate;
-        OrderDetails = command.Details?.Select(d => new OrderDetail {
-            DeviceId = d.DeviceId,
-            Quantity = d.Quantity,
-            UnitPrice = d.UnitPrice,
-            Description = d.Description,
-            OrderId = Id
-        }).ToList() ?? new List<OrderDetail>();
+        InstallationDate = installationDate;
+        OrderDetails = orderDetails ?? [];
     }
 
-    public void Update(UpdateOrderCommand command)
+    public void Update(
+        string action,
+        int stateId,
+        int consumerId,
+        int? specialistId,
+        DateTime? installationDate)
     {
-        Action = command.Action;
+        Action = action;
         CompletedAt = DateTimeConverterHelper.ToNormalizeFormat(DateTime.UtcNow);
-        StateId = command.StateId;
-        ConsumerId = command.ConsumerId;
-        SpecialistId = command.SpecialistId;
-        InstallationDate = command.InstallationDate;
+        StateId = stateId;
+        ConsumerId = consumerId;
+        SpecialistId = specialistId;
+        InstallationDate = installationDate;
     }
 
     public void UpdateState(int newStateId)

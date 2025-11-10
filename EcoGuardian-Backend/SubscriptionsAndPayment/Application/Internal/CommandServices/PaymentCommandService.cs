@@ -1,4 +1,5 @@
 using EcoGuardian_Backend.Shared.Domain.Repositories;
+using EcoGuardian_Backend.SubscriptionsAndPayment.Application.Internal.OutBoundServices;
 using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Model.Aggregates;
 using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Model.Commands;
 using EcoGuardian_Backend.SubscriptionsAndPayment.Domain.Repositories;
@@ -10,23 +11,29 @@ namespace EcoGuardian_Backend.SubscriptionsAndPayment.Application.Internal.Comma
 
 public class PaymentCommandService(
     IPaymentRepository paymentRepository,
+    IExternalPayerService externalPayerService,
     IUnitOfWork unitOfWork) 
     : IPaymentCommandService
 {
     public async Task<Payment> Handle(CreatePaymentCommand command)
     {
-        
-        if (command.PaymentIntentId == null)
-        {
-            throw new ArgumentException("El PaymentIntentId no puede ser nulo.");
-        }
-        
+        var payerId = await externalPayerService.CheckExternalPayerExists(command.UserId);
+
         if (command.Amount <= 0)
         {
             throw new ArgumentException("El monto debe ser mayor que cero.");
         }
 
-        var payment = new Payment(command);
+        var payment = new Payment(
+            command.PaymentIntentId,
+            command.PaymentMethodId,
+            command.Amount,
+            command.Currency,
+            command.PaymentStatus,
+            payerId,
+            command.ReferenceId,
+            command.ReferenceType
+        );
 
         // guardamos el pago en la base de datos
         await paymentRepository.AddAsync(payment);

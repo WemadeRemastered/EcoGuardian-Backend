@@ -1,5 +1,5 @@
 namespace EcoGuardian_Backend.CRM.Interfaces.Rest.Resources;    public record RegisterQuestionResource(
-        int UserId,
+        string UserId,
         int PlantId,
         string Title,
         string QuestionText,

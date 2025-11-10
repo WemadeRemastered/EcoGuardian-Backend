@@ -4,7 +4,7 @@ public record UpdateOrderCommand(
     int Id, 
     string Action,
     int StateId,
-    int ConsumerId,
-    int? SpecialistId,
+    string ConsumerId,
+    string? SpecialistId,
     DateTime? InstallationDate
 );

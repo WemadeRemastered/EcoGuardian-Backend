@@ -2,7 +2,7 @@
 
 public record CreateOrderCommand(
     string Action,
-    int ConsumerId,
+    string ConsumerId,
     DateTime? InstallationDate,
     List<CreateOrderDetailCommand> Details
 );
