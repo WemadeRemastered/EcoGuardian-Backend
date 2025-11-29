@@ -9,7 +9,7 @@ namespace EcoGuardian_Backend.CRM.Domain.Repositories
 {
     public interface IAnswerRepository: IBaseRepository<Answer>
     {
-        Task<IEnumerable<Answer>> GetAnswersByQuestionId(int questionId);
+        Task<Answer> GetAnswersByQuestionId(int questionId);
         Task<IEnumerable<Answer>> GetAnswersBySpecialistId(int specialistId);
     }
 }

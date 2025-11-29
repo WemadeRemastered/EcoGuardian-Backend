@@ -35,6 +35,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 
 builder.Services.AddAuthorization();
+builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
 
 builder.Services.SetUpStorageService();
 builder.Services.AddInfrastructureDependencies(builder, configuration);

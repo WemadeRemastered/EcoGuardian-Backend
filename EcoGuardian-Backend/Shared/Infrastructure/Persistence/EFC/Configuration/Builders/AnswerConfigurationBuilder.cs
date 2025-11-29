@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using EcoGuardian_Backend.CRM.Domain.Model.Aggregates;
@@ -21,8 +18,7 @@ namespace EcoGuardian_Backend.Shared.Infrastructure.Persistence.EFC.Configuratio
                 .ValueGeneratedOnAdd();
 
             builder.Property(a => a.Content)
-                .IsRequired()
-                .HasMaxLength(500);
+                .IsRequired();
 
             builder.Property(a => a.CreatedAt)
                 .IsRequired();

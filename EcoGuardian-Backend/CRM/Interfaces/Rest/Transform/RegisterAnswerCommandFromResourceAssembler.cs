@@ -14,7 +14,6 @@ namespace EcoGuardian_Backend.CRM.Interfaces.Rest.Transform
         {
             return new RegisterAnswerCommand(
                 QuestionId: questionId,
-                AnswerText: resource.AnswerText,
                 SpecialistId: resource.SpecialistId
             );
         }

@@ -1,4 +1,5 @@
 
+using EcoGuardian_Backend.CRM.Domain.Model.Aggregates;
 using EcoGuardian_Backend.CRM.Domain.Model.Commands;
 using EcoGuardian_Backend.CRM.Domain.Services;
 using EcoGuardian_Backend.CRM.Interfaces.Rest.Resources;
@@ -47,10 +48,6 @@ namespace EcoGuardian_Backend.CRM.Interfaces.Rest
         public async Task<IActionResult> GetQuestionById(int questionId)
         {
             var question = await questionQueryService.GetQuestionById(questionId);
-            if (question == null)
-            {
-                return NotFound();
-            }
             var questionResource = QuestionResourceFromEntityAssembler.ToResourceFromEntity(question);
 
             return Ok(questionResource);
@@ -63,11 +60,12 @@ namespace EcoGuardian_Backend.CRM.Interfaces.Rest
         public async Task<IActionResult> GetQuestionsByUserId(int userId)
         {
             var questions = await questionQueryService.GetQuestionsByUserId(userId);
-            if (questions == null || !questions.Any())
+            var enumerable = questions as Question[] ?? questions.ToArray();
+            if (enumerable.Length == 0)
             {
                 return NotFound();
             }
-            var questionsResource = questions.Select(QuestionResourceFromEntityAssembler.ToResourceFromEntity).ToList();
+            var questionsResource = enumerable.Select(QuestionResourceFromEntityAssembler.ToResourceFromEntity).ToList();
             return Ok(questionsResource);
         }
 
@@ -78,11 +76,12 @@ namespace EcoGuardian_Backend.CRM.Interfaces.Rest
         public async Task<IActionResult> GetQuestionsByPlantId(int plantId)
         {
             var questions = await questionQueryService.GetQuestionsByPlantId(plantId);
-            if (questions == null || !questions.Any())
+            var enumerable = questions.ToList();
+            if (enumerable.Count == 0)
             {
                 return NotFound();
             }
-            var questionsResource = questions.Select(QuestionResourceFromEntityAssembler.ToResourceFromEntity).ToList();
+            var questionsResource = enumerable.Select(QuestionResourceFromEntityAssembler.ToResourceFromEntity).ToList();
             return Ok(questionsResource);
         }
 
@@ -91,14 +90,9 @@ namespace EcoGuardian_Backend.CRM.Interfaces.Rest
         [ProducesResponseType(404)]
         public async Task<IActionResult> GetAnswersByQuestionId(int questionId)
         {
-            var answers = await answerQueryService.GetAnswersByQuestionId(questionId);
+            var answers = await answerQueryService.GetAnswerByQuestionId(questionId);
             var question = await questionQueryService.GetQuestionById(questionId);
-            if (answers == null || !answers.Any() || question == null)
-            {
-                //avoid sending error 500
-                return Ok(new List<AnswerResource>());
-            }
-            var answersResource = answers.Select(answer => AnswerResourceFromEntityAssembler.FromEntity(answer, question)).ToList();
+            var answersResource = AnswerResourceFromEntityAssembler.FromEntity(answers, question);
             return Ok(answersResource);
         }
 
@@ -112,14 +106,10 @@ namespace EcoGuardian_Backend.CRM.Interfaces.Rest
             await answerCommandService.Handle(command);
             await addedQuestionEventHandler.HandleAnswerAddedAsync(questionId);
 
-            var answer = await answerQueryService.GetAnswersByQuestionId(questionId);
+            var answer = await answerQueryService.GetAnswerByQuestionId(questionId);
 
             var question = await questionQueryService.GetQuestionById(questionId);
-            if (answer == null || !answer.Any() || question == null)
-            {
-                return NotFound();
-            }
-            var answersResource = answer.Select(answer => AnswerResourceFromEntityAssembler.FromEntity(answer, question)).ToList();
+            var answersResource = AnswerResourceFromEntityAssembler.FromEntity(answer, question);
             return Ok(answersResource);
         }
 
@@ -130,14 +120,12 @@ namespace EcoGuardian_Backend.CRM.Interfaces.Rest
         public async Task<IActionResult> GetAllQuestions()
         {
             var questions = await questionQueryService.GetAllQuestions();
-            if (questions == null || !questions.Any())
+            var enumerable = questions as Question[] ?? questions.ToArray();
+            if (enumerable.Length == 0)
             {
-                //empty list
-                // show message that there are no questions in the response
-                Console.WriteLine("No questions found.");
                 return Ok(new List<QuestionResource>());
             }
-            var questionsResource = questions.Select(QuestionResourceFromEntityAssembler.ToResourceFromEntity).ToList();
+            var questionsResource = enumerable.Select(QuestionResourceFromEntityAssembler.ToResourceFromEntity).ToList();
             return Ok(questionsResource);
         }
         
@@ -147,28 +135,19 @@ namespace EcoGuardian_Backend.CRM.Interfaces.Rest
         public async Task<IActionResult> GetSpecialistAnswers([FromQuery] int specialistId)
         {
             var answers = await answerQueryService.GetAnswersBySpecialistId(specialistId);
-            if (answers == null || !answers.Any())
+            var enumerable = answers as Answer[] ?? answers.ToArray();
+            if (enumerable.Length == 0)
             {
-                Console.WriteLine("No questions found.");
                 return Ok(new List<AnswerResource>());
             }
 
             List<AnswerResource?> answerResource = [];
-            foreach (var answer in answers)
+            foreach (var answer in enumerable)
             {
                 var question = await questionQueryService.GetQuestionById(answer.QuestionId);
-                if (question != null)
                 {
                     var answerResourceItem = AnswerResourceFromEntityAssembler.FromEntity(answer, question);
-                    if (answerResource == null)
-                    {
-                        answerResource = new List<AnswerResource?>();
-                    }
                     answerResource.Add(answerResourceItem);
-                }
-                else
-                {
-                    Console.WriteLine($"Question with ID {answer.QuestionId} not found for answer ID {answer.Id}.");
                 }
             }
             return Ok(answerResource);

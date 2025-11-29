@@ -12,12 +12,11 @@ namespace EcoGuardian_Backend.CRM.Infrastructure.Persistence.EFC.Repositories
 {
     public class AnswerRepository(AppDbContext context) : BaseRepository<Answer>(context), IAnswerRepository
     {
-        public async Task<IEnumerable<Answer>> GetAnswersByQuestionId(int questionId)
+        public async Task<Answer?> GetAnswersByQuestionId(int questionId)
         {
 
             return await context.Set<Answer>()
-                .Where(a => a.QuestionId == questionId)
-                .ToListAsync();
+                .Where(a => a.QuestionId == questionId).FirstOrDefaultAsync();
         }
 
         public async Task<IEnumerable<Answer>> GetAnswersBySpecialistId(int specialistId)

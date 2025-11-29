@@ -1,6 +1,8 @@
+using EcoGuardian_Backend.CRM.Application.External;
 using EcoGuardian_Backend.IAM.Domain.Respositories;
 using EcoGuardian_Backend.IAM.Infrastructure.Persistence.EFC.Respositories;
 using EcoGuardian_Backend.CRM.Domain.Repositories;
+using EcoGuardian_Backend.CRM.Infrastructure.External.Gemini;
 using EcoGuardian_Backend.CRM.Infrastructure.Persistence.EFC.Repositories;
 using EcoGuardian_Backend.OperationAndMonitoring.Domain.Repositories;
 using EcoGuardian_Backend.OperationAndMonitoring.Infrastructure.Persistence.EFC.Repositories;
@@ -35,6 +37,7 @@ public static class InfrastructureDependencyContainer
         services.AddScoped<ISubscriptionStateRepository, SubscriptionStateRepository>();
         services.AddScoped<ISubscriptionTypeRepository, SubscriptionTypeRepository>();
         services.AddScoped<IProfileRepository, ProfileRepository>();
+        services.AddScoped<IGeminiService, GeminiService>();
         
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUserRoleRepository, UserRoleRepository>();

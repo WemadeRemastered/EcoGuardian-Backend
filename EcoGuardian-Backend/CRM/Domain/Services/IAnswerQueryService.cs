@@ -8,7 +8,7 @@ namespace EcoGuardian_Backend.CRM.Domain.Services
 {
     public interface IAnswerQueryService
     {
-        Task<IEnumerable<Answer>> GetAnswersByQuestionId(int questionId);
+        Task<Answer> GetAnswerByQuestionId(int questionId);
         Task<IEnumerable<Answer>> GetAnswersBySpecialistId(int userId);
     
     }
